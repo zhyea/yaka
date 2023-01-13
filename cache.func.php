@@ -38,8 +38,9 @@ function cache_get($k, $c = NULL)
 {
     $cache = $_SERVER['cache'];
     $c = $c ? $c : $cache;
-    if (!$c) return FALSE;
-
+    if (!$c) {
+        return FALSE;
+    }
     strlen($k) > 32 and $k = md5($k);
 
     $k = $c->cachepre . $k;
@@ -51,7 +52,9 @@ function cache_set($k, $v, $life = 0, $c = NULL)
 {
     $cache = $_SERVER['cache'];
     $c = $c ? $c : $cache;
-    if (!$c) return FALSE;
+    if (!$c) {
+        return FALSE;
+    }
 
     strlen($k) > 32 and $k = md5($k);
 
@@ -64,7 +67,9 @@ function cache_delete($k, $c = NULL)
 {
     $cache = $_SERVER['cache'];
     $c = $c ? $c : $cache;
-    if (!$c) return FALSE;
+    if (!$c) {
+        return FALSE;
+    }
 
     strlen($k) > 32 and $k = md5($k);
 
@@ -78,7 +83,9 @@ function cache_truncate($c = NULL)
 {
     $cache = $_SERVER['cache'];
     $c = $c ? $c : $cache;
-    if (!$c) return FALSE;
+    if (!$c) {
+        return FALSE;
+    }
 
     return $c->truncate();
 }
