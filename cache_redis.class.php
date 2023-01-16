@@ -36,7 +36,7 @@ class cache_redis extends cache_abstract
         if (!$this->link && !$this->connect()) {
             return FALSE;
         }
-        $v = xn_json_encode($v);
+        $v = yaka_json_encode($v);
         $r = $this->link->set($k, $v);
         $life and $r and $this->link->expire($k, $life);
         return $r;

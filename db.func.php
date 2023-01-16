@@ -18,7 +18,7 @@ function db_new($conf)
                 $db = new db_pdo_sqlite($conf['pdo_sqlite']);
                 break;
             default:
-                return xn_error(-1, 'Not supported db type:' . $conf['type']);
+                return yaka_error(-1, 'Not supported db type:' . $conf['type']);
         }
         if (!$db || $db->errstr) {
             $err_no = -1;

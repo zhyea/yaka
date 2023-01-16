@@ -26,7 +26,7 @@ function cache_new($cfg_cache)
                 $cache = new cache_yac($cfg_cache['yac']);
                 break;
             default:
-                return xn_error(-1, '不支持的 cache type:' . $cfg_cache['type']);
+                return yaka_error(-1, '不支持的 cache type:' . $cfg_cache['type']);
         }
         return $cache;
     }
@@ -41,7 +41,7 @@ function cache_get($k, $c = NULL)
     if (!$c) {
         return FALSE;
     }
-    strlen($k) > 32 and $k = md5($k);
+    str_length($k) > 32 and $k = md5($k);
 
     $k = $c->cachepre . $k;
     return $c->get($k);
@@ -56,7 +56,7 @@ function cache_set($k, $v, $life = 0, $c = NULL)
         return FALSE;
     }
 
-    strlen($k) > 32 and $k = md5($k);
+    str_length($k) > 32 and $k = md5($k);
 
     $k = $c->cachepre . $k;
     return $c->set($k, $v, $life);
@@ -71,7 +71,7 @@ function cache_delete($k, $c = NULL)
         return FALSE;
     }
 
-    strlen($k) > 32 and $k = md5($k);
+    str_length($k) > 32 and $k = md5($k);
 
     $k = $c->cachepre . $k;
     return $c->delete($k);

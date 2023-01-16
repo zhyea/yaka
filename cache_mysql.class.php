@@ -44,7 +44,7 @@ class cache_mysql extends cache_abstract
         $due = $life ? $time + $life : 0;
         $arr = array(
             'k' => $k,
-            'v' => xn_json_encode($v),
+            'v' => yaka_json_encode($v),
             'due' => $due,
         );
         $r = db_replace($this->table, $arr, $this->db);

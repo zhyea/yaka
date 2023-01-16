@@ -27,7 +27,7 @@ $s = substr($s, 8, -2);
 $yaka = file_get_contents($dir.'yaka.php');
 $before = '// hook yaka_include_before.php';
 $after = '// hook yaka_include_after.php';
-$pre = substr($yaka, 0, strpos($yaka, $before) + 1 + strlen($before));
+$pre = substr($yaka, 0, strpos($yaka, $before) + 1 + str_length($before));
 $suffix = substr($yaka, strpos($yaka, $after));
 $yaka_min = trim($pre)."\r\n\r\n".trim($s)."\r\n\r\n".trim($suffix);
 
