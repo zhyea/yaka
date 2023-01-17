@@ -437,7 +437,7 @@ function https_post($url, $post = '', $cookie = '', $timeout = 30, $times = 1, $
 }
 
 
-// 多线程抓取数据，需要CURL支持，一般在命令行下执行，此函数收集于互联网，由 xiuno 整理，经过测试，会导致 CPU 100%。
+// 多线程抓取数据，需要CURL支持，一般在命令行下执行，此函数收集于互联网，经过测试，会导致 CPU 100%。
 function http_multi_get($urls): array
 {
     // 如果不支持，则转为单线程顺序抓取

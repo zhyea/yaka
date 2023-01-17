@@ -27,7 +27,7 @@ function yaka_unzip($zip_file, $ext_dir)
     // /path/dir1/dir1/a/b   ->   /path/dir1/a/b
     $ext_dir_last = substr(strrchr(substr($ext_dir, 0, -1), '/'), 1);
     if (is_dir($ext_dir . $ext_dir_last)) { // /path/dir1/dir1
-        $ext_dir_tmp = substr($ext_dir, 0, -1) . '__xn__tmp__dir__/';
+        $ext_dir_tmp = substr($ext_dir, 0, -1) . '__yaka__tmp__dir__/';
 
         rename(substr($ext_dir, 0, -1), substr($ext_dir_tmp, 0, -1));
         rename($ext_dir_tmp . $ext_dir_last, substr($ext_dir, 0, -1));

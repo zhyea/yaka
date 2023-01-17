@@ -176,21 +176,23 @@ function ip()
 // 日志记录
 function yaka_log($s, $file = 'error')
 {
-    if (DEBUG == 0 && strpos($file, 'error') === FALSE) return;
+    if (DEBUG == 0 && strpos($file, 'error') === FALSE) {
+        return;
+    }
     $time = $_SERVER['time'];
     $ip = $_SERVER['ip'];
     $conf = _SERVER('conf');
-    $uid = intval(G('uid')); // xiunophp 未定义 $uid
+    $uid = intval(G('uid')); //  未定义 $uid
     $day = date('Ym', $time); // 按照月存放，否则 Ymd 目录太多。
     $mtime = date('Y-m-d H:i:s'); // 默认值为 time()
     $url = $_SERVER['REQUEST_URI'] ?? '';
-    $logpath = $conf['log_path'] . $day;
-    !is_dir($logpath) and mkdir($logpath, 0777, true);
+    $log_path = $conf['log_path'] . $day;
+    !is_dir($log_path) and mkdir($log_path, 0777, true);
 
     $s = str_replace(array("\r\n", "\n", "\t"), ' ', $s);
     $s = "<?php exit;?>\t$mtime\t$ip\t$url\t$uid\t$s\r\n";
 
-    @error_log($s, 3, $logpath . "/$file.php");
+    @error_log($s, 3, $log_path . "/$file.php");
 }
 
 

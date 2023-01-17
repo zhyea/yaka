@@ -71,7 +71,9 @@ class db_pdo_mysql extends db_abstract_mysql
             $t2 = microtime(1);
 
             $t3 = substr($t2 - $t1, 0, 6);
-            //DEBUG AND $GLOBALS['gid'] == 1 AND xn_log("[$t3]".$sql, 'db_sql');
+            if (DEBUG and $GLOBALS['gid'] == 1) {
+                yaka_log("[$t3]" . $sql, 'db_sql');
+            }
         } catch (Exception $e) {
             $this->error($e->getCode(), $e->getMessage());
             return FALSE;
@@ -95,7 +97,10 @@ class db_pdo_mysql extends db_abstract_mysql
             $t2 = microtime(1);
 
             $t3 = substr($t2 - $t1, 0, 6);
-            //DEBUG AND $GLOBALS['gid'] == 1 AND xn_log("[$t3]".$sql, 'db_sql');
+
+            if (DEBUG and $GLOBALS['gid'] == 1) {
+                yaka_log("[$t3]" . $sql, 'db_sql');
+            }
         } catch (Exception $e) {
             $this->error($e->getCode(), $e->getMessage());
             return FALSE;

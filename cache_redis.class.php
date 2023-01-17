@@ -25,7 +25,6 @@ class cache_redis extends cache_abstract
         if (!$r) {
             return $this->error(-1, '连接 Redis 服务器失败。');
         }
-        //$redis->select('xn');
         $this->link = $redis;
         return $this->link;
     }

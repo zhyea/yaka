@@ -3472,9 +3472,9 @@ class SMTP
 
 /*
 	$smtp = array('host'=>'smtp.163.com', 'port'=>25, 'user'=>'zhangsan', 'pass'=>'123456');
-	xn_send_mail($smtp, $username, $email, $subject, $message);
+	send_mail($smtp, $username, $email, $subject, $message);
 */
-function xn_send_mail($smtp, $username, $email, $subject, $message, $charset = 'UTF-8')
+function send_mail($smtp, $username, $email, $subject, $message, $charset = 'UTF-8')
 {
     // 部分 SMTP 不支持UTF-8
     /*
@@ -3525,13 +3525,3 @@ function xn_send_mail($smtp, $username, $email, $subject, $message, $charset = '
     }
 }
 
-/*
-$smtp = array('host'=>'smtp.sina.com', 'port'=>25, 'user'=>'axiuno@sina.com', 'pass'=>'xxxx');
-$username = 'zhangsan';
-$email = 'yaka@gmail.com';
-$subject = 'test';
-$message = 'test';
-xn_send_mail($smtp, $username, $email, $subject, $message);
-*/
-
-?>

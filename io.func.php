@@ -80,7 +80,7 @@ function file_mtime($file)
 
 /*
 	实例：
-	xn_set_dir(123, APP_PATH.'upload');
+	set_dir(123, APP_PATH.'upload');
 
 	000/000/1.jpg
 	000/000/100.jpg

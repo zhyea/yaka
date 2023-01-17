@@ -10,86 +10,84 @@
 	5. 尽量采用函数封装功能，通过前缀区分模块
 */
 
-!defined('DEBUG') AND define('DEBUG', 1); // 1: 开发模式， 2: 线上调试：日志记录，0: 关闭
-!defined('APP_PATH') AND define('APP_PATH', './');
-!defined('YAKA_PATH') AND define('YAKA_PATH', dirname(__FILE__).'/');
+!defined('DEBUG') and define('DEBUG', 1); // 1: 开发模式， 2: 线上调试：日志记录，0: 关闭
+!defined('APP_PATH') and define('APP_PATH', './');
+!defined('YAKA_PATH') and define('YAKA_PATH', dirname(__FILE__) . '/');
 
-function_exists('ini_set') AND ini_set('display_errors', DEBUG ? '1' : '0');
+function_exists('ini_set') and ini_set('display_errors', DEBUG ? '1' : '0');
 error_reporting(DEBUG ? E_ALL : 0);
-version_compare(PHP_VERSION, '5.3.0', '<') AND set_magic_quotes_runtime(0);
+version_compare(PHP_VERSION, '5.3.0', '<') and set_magic_quotes_runtime(0);
 $get_magic_quotes_gpc = version_compare(PHP_VERSION, '5.4.0', '<') ? get_magic_quotes_gpc() : FALSE;
 $start_time = microtime(1);
 $time = time();
 
 // 头部，判断是否运行在命令行下
 define('IN_CMD', !empty($_SERVER['SHELL']) || empty($_SERVER['REMOTE_ADDR']));
-if(IN_CMD) {
-	!isset($_SERVER['REMOTE_ADDR']) AND $_SERVER['REMOTE_ADDR'] = '';
-	!isset($_SERVER['REQUEST_URI']) AND $_SERVER['REQUEST_URI'] = '';
-	!isset($_SERVER['REQUEST_METHOD']) AND $_SERVER['REQUEST_METHOD'] = 'GET';
+if (IN_CMD) {
+    !isset($_SERVER['REMOTE_ADDR']) and $_SERVER['REMOTE_ADDR'] = '';
+    !isset($_SERVER['REQUEST_URI']) and $_SERVER['REQUEST_URI'] = '';
+    !isset($_SERVER['REQUEST_METHOD']) and $_SERVER['REQUEST_METHOD'] = 'GET';
 } else {
-	header("Content-type: text/html; charset=utf-8");
+    header("Content-type: text/html; charset=utf-8");
 }
 
 // ----------------------------------------------------------> db cache class
 
-include YAKA_PATH.'db_mysql.class.php';
-include YAKA_PATH.'db_pdo_mysql.class.php';
-include YAKA_PATH.'db_pdo_sqlite.class.php';
-include YAKA_PATH.'cache_apc.class.php';
-include YAKA_PATH.'cache_memcached.class.php';
-include YAKA_PATH.'cache_mysql.class.php';
-include YAKA_PATH.'cache_redis.class.php';
-include YAKA_PATH.'cache_xcache.class.php';
-include YAKA_PATH.'cache_yac.class.php';
+include YAKA_PATH . 'db_mysql.class.php';
+include YAKA_PATH . 'db_pdo_mysql.class.php';
+include YAKA_PATH . 'db_pdo_sqlite.class.php';
+include YAKA_PATH . 'cache_apc.class.php';
+include YAKA_PATH . 'cache_memcached.class.php';
+include YAKA_PATH . 'cache_mysql.class.php';
+include YAKA_PATH . 'cache_redis.class.php';
+include YAKA_PATH . 'cache_xcache.class.php';
+include YAKA_PATH . 'cache_yac.class.php';
 
 // ----------------------------------------------------------> 全局函数
 
-include YAKA_PATH.'db.func.php';
-include YAKA_PATH.'cache.func.php';
-include YAKA_PATH.'image.func.php';
-include YAKA_PATH.'array.func.php';
+include YAKA_PATH . 'db.func.php';
+include YAKA_PATH . 'cache.func.php';
+include YAKA_PATH . 'image.func.php';
+include YAKA_PATH . 'array.func.php';
 include YAKA_PATH . 'encrypt.func.php';
-include YAKA_PATH.'misc.func.php';
+include YAKA_PATH . 'misc.func.php';
 
-// hook xiunophp_include_after.php
+// hook yaka_include_after.php
 
-empty($conf) AND $conf = array('db'=>array(), 'cache'=>array(), 'tmp_path'=>'./', 'log_path'=>'./', 'timezone'=>'Asia/Shanghai');
-empty($conf['tmp_path']) AND $conf['tmp_path'] = ini_get('upload_tmp_dir');
-empty($conf['log_path']) AND $conf['log_path'] = './';
+empty($conf) and $conf = array('db' => array(), 'cache' => array(), 'tmp_path' => './', 'log_path' => './', 'timezone' => 'Asia/Shanghai');
+empty($conf['tmp_path']) and $conf['tmp_path'] = ini_get('upload_tmp_dir');
+empty($conf['log_path']) and $conf['log_path'] = './';
 
 $ip = ip();
 $long_ip = ip2long($ip);
-$long_ip < 0 AND $long_ip = sprintf("%u", $long_ip); // fix 32 位 OS 下溢出的问题
+$long_ip < 0 and $long_ip = sprintf("%u", $long_ip); // fix 32 位 OS 下溢出的问题
 $useragent = _SERVER('HTTP_USER_AGENT');
 
 // 语言包变量
-!isset($lang) AND $lang = array();
+!isset($lang) and $lang = array();
 
 // 全局的错误，非多线程下很方便。
 $err_no = 0;
 $err_str = '';
 
 // error_handle
-// register_shutdown_function('xn_shutdown_handle');
-DEBUG AND set_error_handler('error_handle', -1);
-empty($conf['timezone']) AND $conf['timezone'] = 'Asia/Shanghai';
+DEBUG and set_error_handler('error_handle', -1);
+empty($conf['timezone']) and $conf['timezone'] = 'Asia/Shanghai';
 date_default_timezone_set($conf['timezone']);
 
 // 超级全局变量
-!empty($_SERVER['HTTP_X_REWRITE_URL']) AND $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
-!isset($_SERVER['REQUEST_URI']) AND $_SERVER['REQUEST_URI'] = '';
+!empty($_SERVER['HTTP_X_REWRITE_URL']) and $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
+!isset($_SERVER['REQUEST_URI']) and $_SERVER['REQUEST_URI'] = '';
 $_SERVER['REQUEST_URI'] = str_replace('/index.php?', '/', $_SERVER['REQUEST_URI']); // 兼容 iis6
 $_REQUEST = array_merge($_COOKIE, $_POST, $_GET, yaka_url_parse($_SERVER['REQUEST_URI']));
 
 // IP 地址
-!isset($_SERVER['REMOTE_ADDR']) AND $_SERVER['REMOTE_ADDR'] = '';
-!isset($_SERVER['SERVER_ADDR']) AND $_SERVER['SERVER_ADDR'] = '';
+!isset($_SERVER['REMOTE_ADDR']) and $_SERVER['REMOTE_ADDR'] = '';
+!isset($_SERVER['SERVER_ADDR']) and $_SERVER['SERVER_ADDR'] = '';
 
 // $_SERVER['REQUEST_METHOD'] === 'PUT' ? @parse_str(file_get_contents('php://input', false , null, -1 , $_SERVER['CONTENT_LENGTH']), $_PUT) : $_PUT = array(); // 不需要支持 PUT
 $ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(trim($_SERVER['HTTP_X_REQUESTED_WITH'])) == 'xmlhttprequest') || param('ajax');
 $method = $_SERVER['REQUEST_METHOD'];
-
 
 
 // 保存到超级全局变量，防止冲突被覆盖。
@@ -107,19 +105,15 @@ $_SERVER['ajax'] = $ajax;
 $_SERVER['get_magic_quotes_gpc'] = $get_magic_quotes_gpc;
 
 
-
-
 // 初始化 db cache，这里并没有连接，在获取数据的时候会自动连接。
 $db = !empty($conf['db']) ? db_new($conf['db']) : NULL;
-//$db AND $db->errno AND xn_message(-1, $db->errstr); // 安装的时候检测过了，不必每次都检测。但是要考虑环境移植。
 
 $conf['cache']['mysql']['db'] = $db; // 这里直接传 $db，复用 $db；如果传配置文件，会产生新链接。
 $cache = !empty($conf['cache']) ? cache_new($conf['cache']) : NULL;
 unset($conf['cache']['mysql']['db']); // 用完清除，防止保存到配置文件
-//$cache AND $cache->errno AND xn_message(-1, $cache->errstr);
 
-// 对 key 进行安全保护，Xiuno 专用扩展
-!empty($conf) AND (function_exists('xiuno_key') ? ($conf['auth_key'] = xiuno_key()) : NULL);
+// 对 key 进行安全保护，Yaka 专用扩展
+!empty($conf) and (function_exists('yaka_key') ? ($conf['auth_key'] = yaka_key()) : NULL);
 
 $_SERVER['db'] = $db;
 $_SERVER['cache'] = $cache;
