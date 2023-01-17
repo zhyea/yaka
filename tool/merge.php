@@ -19,6 +19,9 @@ $s .= php_strip_whitespace($dir.'db.func.php');
 $s .= php_strip_whitespace($dir.'cache.func.php');
 $s .= php_strip_whitespace($dir.'image.func.php');
 $s .= php_strip_whitespace($dir.'array.func.php');
+$s .= php_strip_whitespace($dir.'http.func.php');
+$s .= php_strip_whitespace($dir.'io.func.php');
+$s .= php_strip_whitespace($dir.'str.func.php');
 $s .= php_strip_whitespace($dir.'xn_encrypt.func.php');
 $s .= php_strip_whitespace($dir.'misc.func.php');
 

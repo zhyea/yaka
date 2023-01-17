@@ -72,7 +72,7 @@ class cache_mysql extends cache_abstract
             db_delete($this->table, array('k' => $k), $this->db);
             return NULL;
         }
-        return xn_json_decode($arr['v']);
+        return yaka_json_decode($arr['v']);
     }
 
 

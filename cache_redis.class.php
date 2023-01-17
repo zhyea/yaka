@@ -49,7 +49,7 @@ class cache_redis extends cache_abstract
             return FALSE;
         }
         $r = $this->link->get($k);
-        return $r === FALSE ? NULL : xn_json_decode($r);
+        return $r === FALSE ? NULL : yaka_json_decode($r);
     }
 
 
