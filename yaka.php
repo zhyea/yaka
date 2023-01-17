@@ -49,7 +49,7 @@ include YAKA_PATH.'db.func.php';
 include YAKA_PATH.'cache.func.php';
 include YAKA_PATH.'image.func.php';
 include YAKA_PATH.'array.func.php';
-include YAKA_PATH.'xn_encrypt.func.php';
+include YAKA_PATH . 'encrypt.func.php';
 include YAKA_PATH.'misc.func.php';
 
 // hook xiunophp_include_after.php
@@ -59,8 +59,8 @@ empty($conf['tmp_path']) AND $conf['tmp_path'] = ini_get('upload_tmp_dir');
 empty($conf['log_path']) AND $conf['log_path'] = './';
 
 $ip = ip();
-$longip = ip2long($ip);
-$longip < 0 AND $longip = sprintf("%u", $longip); // fix 32 位 OS 下溢出的问题
+$long_ip = ip2long($ip);
+$long_ip < 0 AND $long_ip = sprintf("%u", $long_ip); // fix 32 位 OS 下溢出的问题
 $useragent = _SERVER('HTTP_USER_AGENT');
 
 // 语言包变量
@@ -96,7 +96,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $_SERVER['starttime'] = $start_time;
 $_SERVER['time'] = $time;
 $_SERVER['ip'] = $ip;
-$_SERVER['longip'] = $longip;
+$_SERVER['longip'] = $long_ip;
 $_SERVER['useragent'] = $useragent;
 $_SERVER['conf'] = $conf;
 $_SERVER['lang'] = $lang;

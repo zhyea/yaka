@@ -22,7 +22,7 @@ $s .= php_strip_whitespace($dir.'array.func.php');
 $s .= php_strip_whitespace($dir.'http.func.php');
 $s .= php_strip_whitespace($dir.'io.func.php');
 $s .= php_strip_whitespace($dir.'str.func.php');
-$s .= php_strip_whitespace($dir.'xn_encrypt.func.php');
+$s .= php_strip_whitespace($dir.'encrypt.func.php');
 $s .= php_strip_whitespace($dir.'misc.func.php');
 
 $s = substr($s, 8, -2);
