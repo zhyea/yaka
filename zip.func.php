@@ -1,21 +1,21 @@
 <?php
 
-function yaka_zip($zip_file, $ext_dir)
+function y_zip($zip_file, $ext_dir)
 {
     $path_info = pathinfo($ext_dir);
     $parent_path = $path_info['dirname'];
     $dirname = $path_info['basename'];
 
-    yaka_unlink($zip_file);
+    y_unlink($zip_file);
     $z = new ZipArchive();
     $z->open($zip_file, ZIPARCHIVE::CREATE);
     $z->addEmptyDir($dirname);
-    yaka_dir_to_zip($z, $ext_dir, str_length("$parent_path/"));
+    y_dir_to_zip($z, $ext_dir, str_length("$parent_path/"));
     $z->close();
 }
 
 
-function yaka_unzip($zip_file, $ext_dir)
+function y_unzip($zip_file, $ext_dir)
 {
     $z = new ZipArchive;
     if ($z->open($zip_file) === TRUE) {
@@ -38,7 +38,7 @@ function yaka_unzip($zip_file, $ext_dir)
 }
 
 
-function yaka_dir_to_zip($z, $zip_path, $pre_len = 0)
+function y_dir_to_zip($z, $zip_path, $pre_len = 0)
 {
     substr($zip_path, -1) != '/' and $zip_path .= '/';
     $file_list = glob($zip_path . "*");
@@ -48,14 +48,14 @@ function yaka_dir_to_zip($z, $zip_path, $pre_len = 0)
             $z->addFile($filepath, $local_path);
         } elseif (is_dir($filepath)) {
             $z->addEmptyDir($local_path);
-            yaka_dir_to_zip($z, $filepath, $pre_len);
+            y_dir_to_zip($z, $filepath, $pre_len);
         }
     }
 }
 
 
 // 第一层的目录名称，用来兼容多层打包
-function yaka_zip_unwrap_path($zip_path, $dirname = ''): array
+function y_zip_unwrap_path($zip_path, $dirname = ''): array
 {
     substr($zip_path, -1) != '/' and $zip_path .= '/';
     $arr = glob("$zip_path*");

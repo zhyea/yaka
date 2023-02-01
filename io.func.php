@@ -35,7 +35,7 @@ function rmdir_recursive($dir, $keep_dir = 0)
     }
     if ($file_arr) {
         foreach ($file_arr as $file) {
-            yaka_unlink($file);
+            y_unlink($file);
         }
     }
     if ($dir_arr) {
@@ -43,30 +43,30 @@ function rmdir_recursive($dir, $keep_dir = 0)
             rmdir_recursive($file);
         }
     }
-    if (!$keep_dir) yaka_rmdir($dir);
+    if (!$keep_dir) y_rmdir($dir);
     return TRUE;
 }
 
 
-function yaka_copy($src, $dest): bool
+function y_copy($src, $dest): bool
 {
     return is_file($src) && copy($src, $dest);
 }
 
 
-function yaka_mkdir($dir, $mod = NULL, $recursive = NULL): bool
+function y_mkdir($dir, $mod = NULL, $recursive = NULL): bool
 {
     return !is_dir($dir) && mkdir($dir, $mod, $recursive);
 }
 
 
-function yaka_rmdir($dir): bool
+function y_rmdir($dir): bool
 {
     return is_dir($dir) && rmdir($dir);
 }
 
 
-function yaka_unlink($file): bool
+function y_unlink($file): bool
 {
     return is_file($file) && unlink($file);
 }
@@ -126,7 +126,7 @@ function copy_recursive($src, $dst)
             if (is_dir($src . '/' . $file)) {
                 copy_recursive($src . '/' . $file, $dst . '/' . $file);
             } else {
-                yaka_copy($src . '/' . $file, $dst . '/' . $file);
+                y_copy($src . '/' . $file, $dst . '/' . $file);
             }
         }
     }
@@ -136,7 +136,7 @@ function copy_recursive($src, $dst)
 
 function move_upload_file($src_file, $dest_file): bool
 {
-    return yaka_copy($src_file, $dest_file);
+    return y_copy($src_file, $dest_file);
 }
 
 
@@ -183,7 +183,7 @@ function is_writable($file)
             $r = touch($tmp_file);
             if (!$r) return FALSE;
             if (!is_file($tmp_file)) return FALSE;
-            yaka_unlink($tmp_file);
+            y_unlink($tmp_file);
             return TRUE;
         } else {
             return FALSE;
@@ -209,10 +209,10 @@ function file_replace_var($filepath, $replace = array(), $pretty = FALSE)
         return $r;
     } elseif ($ext == 'js' || $ext == 'json') {
         $s = file_get_contents_try($filepath);
-        $arr = yaka_json_decode($s);
+        $arr = y_json_decode($s);
         if (empty($arr)) return FALSE;
         $arr = array_merge($arr, $replace);
-        $s = yaka_json_encode($arr, $pretty);
+        $s = y_json_encode($arr, $pretty);
         file_backup($filepath);
         $r = file_put_contents_try($filepath, $s);
         $r != str_length($s) ? file_backup_restore($filepath) : file_backup_unlink($filepath);
@@ -241,7 +241,7 @@ function file_backup($filepath): bool
 {
     $back_file = file_backname($filepath);
     if (is_file($back_file)) return TRUE; // 备份已经存在
-    $r = yaka_copy($filepath, $back_file);
+    $r = y_copy($filepath, $back_file);
     clearstatcache();
     return $r && filesize($back_file) == filesize($filepath);
 }
@@ -251,9 +251,9 @@ function file_backup($filepath): bool
 function file_backup_restore($filepath)
 {
     $back_file = file_backname($filepath);
-    $r = yaka_copy($back_file, $filepath);
+    $r = y_copy($back_file, $filepath);
     clearstatcache();
-    $r && filesize($back_file) == filesize($filepath) && yaka_unlink($back_file);
+    $r && filesize($back_file) == filesize($filepath) && y_unlink($back_file);
     return $r;
 }
 
@@ -262,7 +262,7 @@ function file_backup_restore($filepath)
 function file_backup_unlink($filepath)
 {
     $back_file = file_backname($filepath);
-    return yaka_unlink($back_file);
+    return y_unlink($back_file);
 }
 
 

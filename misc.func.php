@@ -2,7 +2,7 @@
 
 
 // 使用全局变量记录错误信息
-function yaka_error($no, $str, $return = FALSE)
+function y_error($no, $str, $return = FALSE)
 {
     global $err_no, $err_str;
     $err_no = $no;
@@ -174,7 +174,7 @@ function ip()
 
 
 // 日志记录
-function yaka_log($s, $file = 'error')
+function y_log($s, $file = 'error')
 {
     if (DEBUG == 0 && strpos($file, 'error') === FALSE) {
         return;
@@ -196,11 +196,11 @@ function yaka_log($s, $file = 'error')
 }
 
 
-function yaka_shutdown_handle()
+function y_shutdown_handle()
 {
 }
 
-function yaka_debug_info()
+function y_debug_info()
 {
     $db = $_SERVER['db'];
     $start_time = $_SERVER['starttime'];

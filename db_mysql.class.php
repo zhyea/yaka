@@ -66,7 +66,7 @@ class db_mysql extends db_abstract_mysql
         $t2 = microtime(1);
         $t3 = substr($t2 - $t1, 0, 6);
 
-        DEBUG and yaka_log("[$t3]" . $sql, 'db_sql');
+        DEBUG and y_log("[$t3]" . $sql, 'db_sql');
         if (count($this->sql_array) < 1000) $this->sql_array[] = "[$t3]" . $sql;
 
         if ($query !== FALSE) {
@@ -98,7 +98,7 @@ class db_mysql extends db_abstract_mysql
         }
 
         $t3 = substr($t2 - $t1, 0, 6);
-        DEBUG and yaka_log("[$t3]" . $sql, 'db_sql');
+        DEBUG and y_log("[$t3]" . $sql, 'db_sql');
         if (count($this->sql_array) < 1000) {
             $this->sql_array[] = "[$t3]" . $sql;
         }

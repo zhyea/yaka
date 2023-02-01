@@ -18,7 +18,7 @@ function db_new($conf)
                 $db = new db_pdo_sqlite($conf['pdo_sqlite']);
                 break;
             default:
-                return yaka_error(-1, 'Not supported db type:' . $conf['type']);
+                return y_error(-1, 'Not supported db type:' . $conf['type']);
         }
         if (!$db || $db->errstr) {
             $err_no = -1;
@@ -98,7 +98,7 @@ function db_exec($sql, $d = NULL)
         return FALSE;
     }
 
-    DEBUG and yaka_log($sql, 'db_exec');
+    DEBUG and y_log($sql, 'db_exec');
 
     $n = $d->exec($sql);
 
@@ -275,7 +275,7 @@ function db_error($r, $d = NULL, $sql = '')
         $err_no = $d->errno;
         $err_str = db_err_str_safe($err_no, $d->errstr);
         $s = 'SQL:' . $sql . "\r\nerr_no: " . $err_no . ", err_str: " . $err_str;
-        yaka_log($s, 'db_error');
+        y_log($s, 'db_error');
     }
 }
 

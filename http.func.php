@@ -1,10 +1,10 @@
 ﻿<?php
 
 
-function yaka_message($code, $message)
+function y_message($code, $message)
 {
     $ajax = $_SERVER['ajax'];
-    echo $ajax ? yaka_json_encode(array('code' => $code, 'message' => $message)) : $message;
+    echo $ajax ? y_json_encode(array('code' => $code, 'message' => $message)) : $message;
     exit;
 }
 
@@ -18,7 +18,7 @@ function log_post_data()
     isset($post['password_new']) and $post['password_new'] = '******';    // 干掉密码信息
     isset($post['password_old']) and $post['password_old'] = '******';    // 干掉密码信息
 
-    yaka_log(yaka_json_encode($post), 'post_data');
+    y_log(y_json_encode($post), 'post_data');
 }
 
 
@@ -36,7 +36,7 @@ function error_handle($errno, $err_str, $err_file, $err_line)
 
     $subject = "Error[$errno]: $err_str, File: $err_file, Line: $err_line";
     $message = array();
-    yaka_log($subject, 'php_error'); // 所有PHP错误报告都记录日志
+    y_log($subject, 'php_error'); // 所有PHP错误报告都记录日志
 
     $arr = debug_backtrace();
     array_shift($arr);
@@ -53,7 +53,7 @@ function error_handle($errno, $err_str, $err_file, $err_line)
 			<div>" . implode("<br>\r\n", $message) . "</div>
 		</fieldset>";
     echo ($ajax || IN_CMD) ? $txt : $html;
-    DEBUG == 2 and yaka_log($txt, 'debug_error');
+    DEBUG == 2 and y_log($txt, 'debug_error');
 
     return TRUE;
 }
@@ -391,7 +391,7 @@ function https_post($url, $post = '', $cookie = '', $timeout = 30, $times = 1, $
         $s = file_get_contents($url, NULL, $stream, 0, 4096000);
         return $s;
     } elseif (!function_exists('curl_init')) {
-        return yaka_error(-1, 'server not installed curl.');
+        return y_error(-1, 'server not installed curl.');
     }
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -415,7 +415,7 @@ function https_post($url, $post = '', $cookie = '', $timeout = 30, $times = 1, $
     curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
     $data = curl_exec($ch);
     if (curl_errno($ch)) {
-        return yaka_error(-1, 'Errno' . curl_error($ch));
+        return y_error(-1, 'Errno' . curl_error($ch));
     }
     if (!$data) {
         curl_close($ch);
@@ -506,7 +506,7 @@ function param_json($key)
     if (empty($s)) {
         return '';
     }
-    return yaka_json_decode($s);
+    return y_json_decode($s);
 }
 
 
@@ -529,7 +529,7 @@ function param_url($key): string
  *     c => d
  * )
  */
-function yaka_url_parse($request_url)
+function y_url_parse($request_url)
 {
     // 处理: /demo/?user-login.htm?a=b&c=d
     // 结果：/demo/user-login.htm?a=b&c=d

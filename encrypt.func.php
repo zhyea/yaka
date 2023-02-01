@@ -1,7 +1,7 @@
 <?php
 
 
-function yaka_key()
+function y_key()
 {
     $conf = _SERVER('conf');
     return $conf['auth_key'] ?? '';
@@ -17,7 +17,7 @@ function safe_key(): string
     $long_ip = _SERVER('longip');
     $time = _SERVER('time');
     $useragent = _SERVER('useragent');
-    $key = yaka_key();
+    $key = y_key();
     $behind = intval(substr($time, -2, 2));
     $t = $behind > 80 ? $time - 20 : ($behind < 20 ? $time - 40 : $time); // 修正范围，防止进位，有效时间窗口
     $front = substr($t, 0, -2);
@@ -25,24 +25,24 @@ function safe_key(): string
 }
 
 
-function yaka_encrypt($txt, $key = '')
+function y_encrypt($txt, $key = '')
 {
-    empty($key) and $key = yaka_key();
-    $encrypt = _yaka_encrypt($txt, $key);
+    empty($key) and $key = y_key();
+    $encrypt = _y_encrypt($txt, $key);
     return url_encode(base64_encode($encrypt));
 }
 
 
-function yaka_decrypt($txt, $key = '')
+function y_decrypt($txt, $key = '')
 {
-    empty($key) and $key = yaka_key();
+    empty($key) and $key = y_key();
     $encrypt = base64_decode(url_decode($txt));
-    return _yaka_decrypt($encrypt, $key);
+    return _y_decrypt($encrypt, $key);
 }
 
 
 // ---------------------> encrypt function
-function _yaka_long2str($v, $w)
+function _y_long2str($v, $w)
 {
     $len = count($v);
     $n = ($len - 1) << 2;
@@ -62,7 +62,7 @@ function _yaka_long2str($v, $w)
     }
 }
 
-function _yaka_str2long($s, $w)
+function _y_str2long($s, $w)
 {
     $v = unpack("V*", $s . str_repeat("\0", (4 - str_length($s) % 4) & 3));
     $v = array_values($v);
@@ -72,7 +72,7 @@ function _yaka_str2long($s, $w)
     return $v;
 }
 
-function _yaka_int32($n): int
+function _y_int32($n): int
 {
     while ($n >= 2147483648) $n -= 4294967296;
     while ($n <= -2147483649) $n += 4294967296;
@@ -80,13 +80,13 @@ function _yaka_int32($n): int
 }
 
 
-function _yaka_encrypt($str, $key)
+function _y_encrypt($str, $key)
 {
     if ($str == '') {
         return '';
     }
-    $v = _yaka_str2long($str, TRUE);
-    $k = _yaka_str2long($key, FALSE);
+    $v = _y_str2long($str, TRUE);
+    $k = _y_str2long($key, FALSE);
     if (count($k) < 4) {
         for ($i = count($k); $i < 4; $i++) {
             $k[$i] = 0;
@@ -100,28 +100,28 @@ function _yaka_encrypt($str, $key)
     $q = floor(6 + 52 / ($n + 1));
     $sum = 0;
     while (0 < $q--) {
-        $sum = _yaka_int32($sum + $delta);
+        $sum = _y_int32($sum + $delta);
         $e = $sum >> 2 & 3;
         for ($p = 0; $p < $n; $p++) {
             $y = $v[$p + 1];
-            $mx = _yaka_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _yaka_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
-            $z = $v[$p] = _yaka_int32($v[$p] + $mx);
+            $mx = _y_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _y_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
+            $z = $v[$p] = _y_int32($v[$p] + $mx);
         }
         $y = $v[0];
-        $mx = _yaka_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _yaka_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
-        $z = $v[$n] = _yaka_int32($v[$n] + $mx);
+        $mx = _y_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _y_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
+        $z = $v[$n] = _y_int32($v[$n] + $mx);
     }
-    return _yaka_long2str($v, FALSE);
+    return _y_long2str($v, FALSE);
 }
 
 
-function _yaka_decrypt($str, $key)
+function _y_decrypt($str, $key)
 {
     if ($str == '') {
         return '';
     }
-    $v = _yaka_str2long($str, FALSE);
-    $k = _yaka_str2long($key, FALSE);
+    $v = _y_str2long($str, FALSE);
+    $k = _y_str2long($key, FALSE);
     if (count($k) < 4) {
         for ($i = count($k); $i < 4; $i++) {
             $k[$i] = 0;
@@ -133,18 +133,18 @@ function _yaka_decrypt($str, $key)
     $y = $v[0];
     $delta = 0x9E3779B9;
     $q = floor(6 + 52 / ($n + 1));
-    $sum = _yaka_int32($q * $delta);
+    $sum = _y_int32($q * $delta);
     while ($sum != 0) {
         $e = $sum >> 2 & 3;
         for ($p = $n; $p > 0; $p--) {
             $z = $v[$p - 1];
-            $mx = _yaka_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _yaka_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
-            $y = $v[$p] = _yaka_int32($v[$p] - $mx);
+            $mx = _y_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _y_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
+            $y = $v[$p] = _y_int32($v[$p] - $mx);
         }
         $z = $v[$n];
-        $mx = _yaka_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _yaka_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
-        $y = $v[0] = _yaka_int32($v[0] - $mx);
-        $sum = _yaka_int32($sum - $delta);
+        $mx = _y_int32((($z >> 5 & 0x07ffffff) ^ $y << 2) + (($y >> 3 & 0x1fffffff) ^ $z << 4)) ^ _y_int32(($sum ^ $y) + ($k[$p & 3 ^ $e] ^ $z));
+        $y = $v[0] = _y_int32($v[0] - $mx);
+        $sum = _y_int32($sum - $delta);
     }
-    return _yaka_long2str($v, TRUE);
+    return _y_long2str($v, TRUE);
 }

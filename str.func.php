@@ -31,7 +31,7 @@ function txt_to_html($s)
 }
 
 
-function yaka_json_encode($data, $pretty = FALSE, $level = 0)
+function y_json_encode($data, $pretty = FALSE, $level = 0)
 {
     if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
         return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -61,8 +61,8 @@ function yaka_json_encode($data, $pretty = FALSE, $level = 0)
             $output_indexed = array();
             $output_associative = array();
             foreach ($data as $key => $value) {
-                $output_indexed[] = yaka_json_encode($value, $pretty, $level + 1);
-                $output_associative[] = $tab2 . '"' . $key . '":' . yaka_json_encode($value, $pretty, $level + 1);
+                $output_indexed[] = y_json_encode($value, $pretty, $level + 1);
+                $output_associative[] = $tab2 . '"' . $key . '":' . y_json_encode($value, $pretty, $level + 1);
                 if ($output_index_count !== NULL && $output_index_count++ !== $key) {
                     $output_index_count = NULL;
                 }
@@ -78,7 +78,7 @@ function yaka_json_encode($data, $pretty = FALSE, $level = 0)
 }
 
 
-function yaka_json_decode($json)
+function y_json_decode($json)
 {
     $json = trim($json, "\xEF\xBB\xBF");
     $json = trim($json, "\xFE\xFF");

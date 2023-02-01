@@ -72,7 +72,7 @@ class db_pdo_mysql extends db_abstract_mysql
 
             $t3 = substr($t2 - $t1, 0, 6);
             if (DEBUG and $GLOBALS['gid'] == 1) {
-                yaka_log("[$t3]" . $sql, 'db_sql');
+                y_log("[$t3]" . $sql, 'db_sql');
             }
         } catch (Exception $e) {
             $this->error($e->getCode(), $e->getMessage());
@@ -99,7 +99,7 @@ class db_pdo_mysql extends db_abstract_mysql
             $t3 = substr($t2 - $t1, 0, 6);
 
             if (DEBUG and $GLOBALS['gid'] == 1) {
-                yaka_log("[$t3]" . $sql, 'db_sql');
+                y_log("[$t3]" . $sql, 'db_sql');
             }
         } catch (Exception $e) {
             $this->error($e->getCode(), $e->getMessage());

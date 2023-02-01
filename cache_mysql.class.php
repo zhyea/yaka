@@ -44,7 +44,7 @@ class cache_mysql extends cache_abstract
         $due = $life ? $time + $life : 0;
         $arr = array(
             'k' => $k,
-            'v' => yaka_json_encode($v),
+            'v' => y_json_encode($v),
             'due' => $due,
         );
         $r = db_replace($this->table, $arr, $this->db);
@@ -72,7 +72,7 @@ class cache_mysql extends cache_abstract
             db_delete($this->table, array('k' => $k), $this->db);
             return NULL;
         }
-        return yaka_json_decode($arr['v']);
+        return y_json_decode($arr['v']);
     }
 
 

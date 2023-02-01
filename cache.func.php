@@ -26,7 +26,7 @@ function cache_new($cfg_cache)
                 $cache = new cache_yac($cfg_cache['yac']);
                 break;
             default:
-                return yaka_error(-1, '不支持的 cache type:' . $cfg_cache['type']);
+                return y_error(-1, '不支持的 cache type:' . $cfg_cache['type']);
         }
         return $cache;
     }

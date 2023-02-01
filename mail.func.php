@@ -3519,7 +3519,7 @@ function send_mail($smtp, $username, $email, $subject, $message, $charset = 'UTF
     //$mail->AddAttachment("images/phpmailer.gif");      // attachment
     //$mail->AddAttachment("images/phpmailer_mini.gif"); // attachment
     if (!$mail->Send()) {
-        return yaka_error(-1, $mail->ErrorInfo);
+        return y_error(-1, $mail->ErrorInfo);
     } else {
         return TRUE;
     }

@@ -79,7 +79,7 @@ date_default_timezone_set($conf['timezone']);
 !empty($_SERVER['HTTP_X_REWRITE_URL']) and $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
 !isset($_SERVER['REQUEST_URI']) and $_SERVER['REQUEST_URI'] = '';
 $_SERVER['REQUEST_URI'] = str_replace('/index.php?', '/', $_SERVER['REQUEST_URI']); // 兼容 iis6
-$_REQUEST = array_merge($_COOKIE, $_POST, $_GET, yaka_url_parse($_SERVER['REQUEST_URI']));
+$_REQUEST = array_merge($_COOKIE, $_POST, $_GET, y_url_parse($_SERVER['REQUEST_URI']));
 
 // IP 地址
 !isset($_SERVER['REMOTE_ADDR']) and $_SERVER['REMOTE_ADDR'] = '';
@@ -113,7 +113,7 @@ $cache = !empty($conf['cache']) ? cache_new($conf['cache']) : NULL;
 unset($conf['cache']['mysql']['db']); // 用完清除，防止保存到配置文件
 
 // 对 key 进行安全保护，Yaka 专用扩展
-!empty($conf) and (function_exists('yaka_key') ? ($conf['auth_key'] = yaka_key()) : NULL);
+!empty($conf) and (function_exists('y_key') ? ($conf['auth_key'] = y_key()) : NULL);
 
 $_SERVER['db'] = $db;
 $_SERVER['cache'] = $cache;
