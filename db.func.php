@@ -6,7 +6,6 @@ function db_new($conf)
     global $err_no, $err_str;
     // 数据库初始化，这里并不会产生连接！
     if ($conf) {
-        // 代码不仅仅是给人看的，更重要的是给编译器分析的，不要玩 $db = new $dbclass()，那样不利于优化和 opcache 。
         switch ($conf['type']) {
             case 'mysql':
                 $db = new db_mysql($conf['mysql']);
@@ -14,15 +13,12 @@ function db_new($conf)
             case 'pdo_mysql':
                 $db = new db_pdo_mysql($conf['pdo_mysql']);
                 break;
-            case 'pdo_sqlite':
-                $db = new db_pdo_sqlite($conf['pdo_sqlite']);
-                break;
             default:
                 return y_error(-1, 'Not supported db type:' . $conf['type']);
         }
-        if (!$db || $db->errstr) {
+        if (!$db || $db->err_str) {
             $err_no = -1;
-            $err_str = $db->errstr;
+            $err_str = $db->err_str;
             return FALSE;
         }
         return $db;
@@ -57,12 +53,12 @@ function db_close($d = NULL)
 }
 
 
-function db_sql_find_one($sql, $d = NULL)
+function db_sql_find_one($sql, $d = NULL): array
 {
     $db = $_SERVER['db'];
     $d = $d ? $d : $db;
     if (!$d) {
-        return FALSE;
+        return array();
     }
     $arr = $d->sql_find_one($sql);
 
@@ -72,12 +68,12 @@ function db_sql_find_one($sql, $d = NULL)
 }
 
 
-function db_sql_find($sql, $key = NULL, $d = NULL)
+function db_sql_find($sql, $key = NULL, $d = NULL): array
 {
     $db = $_SERVER['db'];
     $d = $d ? $d : $db;
     if (!$d) {
-        return FALSE;
+        return array();
     }
     $arr = $d->sql_find($sql, $key);
 
@@ -108,12 +104,12 @@ function db_exec($sql, $d = NULL)
 }
 
 
-function db_count($table, $cond = array(), $d = NULL)
+function db_count($table, $cond = array(), $d = NULL): int
 {
     $db = $_SERVER['db'];
     $d = $d ? $d : $db;
     if (!$d) {
-        return FALSE;
+        return 0;
     }
 
     $r = $d->count($d->tablepre . $table, $cond);
@@ -124,12 +120,12 @@ function db_count($table, $cond = array(), $d = NULL)
 }
 
 
-function db_max_id($table, $field, $cond = array(), $d = NULL)
+function db_max_id($table, $field, $cond = array(), $d = NULL): int
 {
     $db = $_SERVER['db'];
     $d = $d ? $d : $db;
     if (!$d) {
-        return FALSE;
+        return 0;
     }
 
     $r = $d->maxid($d->tablepre . $table, $field, $cond);
@@ -167,6 +163,8 @@ function db_insert($table, $arr, $d = NULL)
     }
     return db_exec("INSERT INTO {$d->tablepre}$table $sql_add", $d);
 }
+
+
 
 function db_replace($table, $arr, $d = NULL)
 {
@@ -240,7 +238,7 @@ function db_read($table, $cond, $d = NULL)
 }
 
 
-function db_find($table, $cond = array(), $order_by = array(), $page = 1, $page_size = 10, $key = '', $col = array(), $d = NULL):array
+function db_find($table, $cond = array(), $order_by = array(), $page = 1, $page_size = 10, $key = '', $col = array(), $d = NULL): array
 {
     $db = $_SERVER['db'];
 
@@ -300,52 +298,45 @@ function db_err_str_safe($err_no, $err_str): string
 }
 
 
-
-//----------------------------------->  表结构和索引相关 end
 /*
-$cond = array('id'=>123, 'groupid'=>array('>'=>100, 'LIKE'=>'\'jack'));
-$s = db_cond_to_sqladd($cond);
-echo $s;
+  $cond = array('id'=>123, 'group_id'=>array('>'=>100, 'LIKE'=>'\'jack'));
+  $s = db_cond_to_sql_add($cond);
+  echo $s;
 
-WHERE id=123 AND groupid>100 AND groupid LIKE '%\'jack%'
+  WHERE id=123 AND group_id>100 AND group_id LIKE '%\'jack%'
 
-// 格式：
-array('id'=>123, 'groupid'=>123)
-array('id'=>array(1,2,3,4,5))
-array('id'=>array('>' => 100, '<' => 200))
-array('username'=>array('LIKE' => 'jack'))
-*/
-
-function db_cond_to_sql_add($cond) {
+  // 格式：
+  array('id'=>123, 'group_id'=>123)
+  array('id'=>array(1,2,3,4,5))
+  array('id'=>array('>' => 100, '<' => 200))
+  array('username'=>array('LIKE' => 'jack'))
+  */
+function db_cond_to_sql_add($cond): string
+{
     $s = '';
-    if(!empty($cond)) {
+    if (!empty($cond)) {
         $s = ' WHERE ';
-        foreach($cond as $k=>$v) {
-            if(!is_array($v)) {
-                $v = (is_int($v) || is_float($v)) ? $v : "'".addslashes($v)."'";
+        foreach ($cond as $k => $v) {
+            if (!is_array($v)) {
+                $v = (is_int($v) || is_float($v)) ? $v : "'" . addslashes($v) . "'";
                 $s .= "`$k`=$v AND ";
-            } elseif(isset($v[0])) {
+            } elseif (isset($v[0])) {
                 // OR 效率比 IN 高
                 $s .= '(';
                 //$v = array_reverse($v);
                 foreach ($v as $v1) {
-                    $v1 = (is_int($v1) || is_float($v1)) ? $v1 : "'".addslashes($v1)."'";
+                    $v1 = (is_int($v1) || is_float($v1)) ? $v1 : "'" . addslashes($v1) . "'";
                     $s .= "`$k`=$v1 OR ";
                 }
                 $s = substr($s, 0, -4);
                 $s .= ') AND ';
-
-                /*
-                $ids = implode(',', $v);
-                $s .= "$k IN ($ids) AND ";
-                */
             } else {
-                foreach($v as $k1=>$v1) {
-                    if($k1 == 'LIKE') {
+                foreach ($v as $k1 => $v1) {
+                    if ($k1 == 'LIKE') {
                         $k1 = ' LIKE ';
-                        $v1="%$v1%";
+                        $v1 = "%$v1%";
                     }
-                    $v1 = (is_int($v1) || is_float($v1)) ? $v1 : "'".addslashes($v1)."'";
+                    $v1 = (is_int($v1) || is_float($v1)) ? $v1 : "'" . addslashes($v1) . "'";
                     $s .= "`$k`$k1$v1 AND ";
                 }
             }
@@ -356,13 +347,14 @@ function db_cond_to_sql_add($cond) {
 }
 
 
-function db_order_by_to_sql_add($order_by) {
+function db_order_by_to_sql_add($order_by): string
+{
     $s = '';
-    if(!empty($order_by)) {
+    if (!empty($order_by)) {
         $s .= ' ORDER BY ';
         $comma = '';
-        foreach($order_by as $k=> $v) {
-            $s .= $comma."`$k` ".($v == 1 ? ' ASC ' : ' DESC ');
+        foreach ($order_by as $k => $v) {
+            $s .= $comma . "`$k` " . ($v == 1 ? ' ASC ' : ' DESC ');
             $comma = ',';
         }
     }
@@ -371,19 +363,20 @@ function db_order_by_to_sql_add($order_by) {
 
 
 /*
-	$arr = array(
-		'name'=>'abc',
-		'stocks+'=>1,
-		'date'=>12345678900,
-	)
-	db_array_to_update_sqladd($arr);
+    $arr = array(
+        'name'=>'abc',
+        'stocks+'=>1,
+        'date'=>12345678900,
+    )
+    db_array_to_update_sql_add($arr);
 */
-function db_array_to_update_sql_add($arr) {
+function db_array_to_update_sql_add($arr): string
+{
     $s = '';
-    foreach($arr as $k=>$v) {
+    foreach ($arr as $k => $v) {
         $v = addslashes($v);
         $op = substr($k, -1);
-        if($op == '+' || $op == '-') {
+        if ($op == '+' || $op == '-') {
             $k = substr($k, 0, -1);
             $v = (is_int($v) || is_float($v)) ? $v : "'$v'";
             $s .= "`$k`=$k$op$v,";
@@ -395,27 +388,27 @@ function db_array_to_update_sql_add($arr) {
     return substr($s, 0, -1);
 }
 
+
 /*
-	$arr = array(
-		'name'=>'abc',
-		'date'=>12345678900,
-	)
-	db_array_to_insert_sqladd($arr);
+    $arr = array(
+        'name'=>'abc',
+        'date'=>12345678900,
+    )
+    db_array_to_insert_sql_add($arr);
 */
-function db_array_to_insert_sql_add($arr) {
+function db_array_to_insert_sql_add($arr): string
+{
     $s = '';
     $keys = array();
     $values = array();
-    foreach($arr as $k=>$v) {
+    foreach ($arr as $k => $v) {
         $k = addslashes($k);
         $v = addslashes($v);
-        $keys[] = '`'.$k.'`';
+        $keys[] = '`' . $k . '`';
         $v = (is_int($v) || is_float($v)) ? $v : "'$v'";
         $values[] = $v;
     }
-    $keystr = implode(',', $keys);
-    $valstr = implode(',', $values);
-    $sqladd = "($keystr) VALUES ($valstr)";
-    return $sqladd;
+    $str_key = implode(',', $keys);
+    $str_val = implode(',', $values);
+    return "($str_key) VALUES ($str_val)";
 }
-

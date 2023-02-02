@@ -19,8 +19,8 @@ abstract class db_abstract_mysql extends db_abstract
     public function find($table, $cond = array(), $order_by = array(), $page = 1, $page_size = 10, $key = '', $col = array())
     {
         $page = max(1, $page);
-        $cond = $this->db_cond_to_sql_add($cond);
-        $order_by = $this->db_order_by_to_sql_add($order_by);
+        $cond = db_cond_to_sql_add($cond);
+        $order_by = db_order_by_to_sql_add($order_by);
         $offset = ($page - 1) * $page_size;
         $cols = $col ? implode(',', $col) : '*';
 
@@ -30,8 +30,8 @@ abstract class db_abstract_mysql extends db_abstract
 
     public function find_one($table, $cond = array(), $order_by = array(), $col = array())
     {
-        $cond = $this->db_cond_to_sql_add($cond);
-        $order_by = $this->db_order_by_to_sql_add($order_by);
+        $cond = db_cond_to_sql_add($cond);
+        $order_by = db_order_by_to_sql_add($order_by);
         $cols = $col ? implode(',', $col) : '*';
         return $this->sql_find_one("SELECT $cols FROM {$this->table_pre}$table $cond$order_by LIMIT 1");
     }
@@ -50,7 +50,7 @@ abstract class db_abstract_mysql extends db_abstract
             $dbname = $this->conf_slave['name'];
             $sql = "SELECT TABLE_ROWS as num FROM information_schema.tables WHERE TABLE_SCHEMA='$dbname' AND TABLE_NAME='$table'";
         } else {
-            $cond = $this->db_cond_to_sql_add($cond);
+            $cond = db_cond_to_sql_add($cond);
             $sql = "SELECT COUNT(*) AS num FROM `$table` $cond";
         }
         $arr = $this->sql_find_one($sql);
@@ -60,7 +60,7 @@ abstract class db_abstract_mysql extends db_abstract
 
     public function max_id($table, $field, $cond = array()): int
     {
-        $sql_add = $this->db_cond_to_sql_add($cond);
+        $sql_add = db_cond_to_sql_add($cond);
         $sql = "SELECT MAX($field) AS max_id FROM `$table` $sql_add";
         $arr = $this->sql_find_one($sql);
         return !empty($arr) ? intval($arr['max_id']) : $arr;
